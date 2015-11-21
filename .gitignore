@@ -3,3 +3,7 @@
 
 # Compiled Python stuff.
 *.pyc
+
+# Ignore build artifacts.
+/dist
+/reflect.egg-info
