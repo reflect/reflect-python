@@ -1,0 +1,5 @@
+# Ignore development artifacts
+*.sw[onp]
+
+# Compiled Python stuff.
+*.pyc
