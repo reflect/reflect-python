@@ -5,6 +5,14 @@ geared for uploading data, but full support for the API is planned. If there
 are features that are missing, feel free to open an issue or even a pull
 request!
 
+## Installation
+
+The Reflect python library is available via PyPI.
+
+```bash
+$ pip install reflect
+```
+
 ## Example
 
 ```python
