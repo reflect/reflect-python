@@ -7,3 +7,4 @@
 # Ignore build artifacts.
 /dist
 /reflect.egg-info
+/build
