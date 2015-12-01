@@ -75,6 +75,17 @@ class Keyspace(ReflectObject):
 		# This is probably an error.
 		raise RuntimeError("An error occured during the request: %s" % (data['error']))
 
+	def delete(self, key):
+		"""Delete an entire tablet within a keyspace. If no tablet exists with the
+		supplied key then this is a no-op."""
+		data = self._client.delete(self._get_key_path(key))
+
+		if data is None:
+			return None
+
+		# This is probably an error.
+		raise RuntimeError("An error occured during the request: %s" % (data['error']))
+
 	def _get_key_path(self, key):
 		return "v1/keyspaces/%s/tablets/%s" % (self.slug, key)
 
@@ -102,6 +113,11 @@ class Client(object):
 		path = "v1/keyspaces/%s" % (slug)
 		return _to_object(self.get(path), self, Keyspace)
 
+	def destroy_keyspace(self, slug):
+		"""Delete an entire keyspace."""
+		path = "v1/keyspaces/%s" % (slug)
+		return self.delete(path)
+
 	def put(self, path, content):
 		req = self._get_request("PUT", path)
 		req.add_data(content)
@@ -117,7 +133,8 @@ class Client(object):
 		return self._parse(urllib2.urlopen(req))
 
 	def delete(self, path):
-		pass
+		req = self._get_request("DELETE", path)
+		return self._parse(urllib2.urlopen(req))
 
 	def patch(self, path, content, headers=None):
 		req = self._get_request("PUT", path)
