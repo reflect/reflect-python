@@ -103,3 +103,24 @@ recs = [
 
 keyspace.upsert("my-key", recs, ["column1"])
 ```
+
+### `delete(key)`
+
+Delete a tablet within a keyspace. If the specified tablet exists, this is a
+no-op but won't be reported as such to the client.
+
+For more info, see the [Uploading Data Reflect API reference](https://reflect.io/docs/api-reference/uploading-data.html).
+
+#### Parameters
+
+* **key** - The key for the tablet you're appending to.
+
+#### Example
+
+```python
+import reflect
+
+client = reflect.Client("<API Token>")
+keyspace = client.keyspace('my-keyspace-slug')
+keyspace.delete("my-key")
+```

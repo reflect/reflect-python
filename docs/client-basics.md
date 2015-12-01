@@ -41,3 +41,23 @@ KEYSPACE_SLUG = "my-keyspace"
 client = reflect.Client.new("<API Token>")
 keyspace = client.keyspace(KEYSPACE_SLUG)
 ```
+
+### `destroy_keyspace(slug)`
+
+Delete an entire keyspace. If any keyspace operations are pending, the keyspace
+may be re-created by Reflect.
+
+#### Parameters
+
+* **slug** - The slug for a Keyspace.
+
+#### Example
+
+```python
+import reflect
+
+KEYSPACE_SLUG = "my-keyspace"
+
+client = reflect.Client.new("<API Token>")
+client.destroy_keyspace(KEYSPACE_SLUG)
+```
