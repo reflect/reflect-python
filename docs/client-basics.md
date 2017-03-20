@@ -20,44 +20,30 @@ import reflect
 client = reflect.Client("<API Token>")
 ```
 
-### `keyspace(slug)`
+## `generateToken(secretKey, params)`
 
-Load the metadata associated with a keyspace. This is most useful for
-performing [Keyspace
-operations](https://github.com/reflect/reflect-python/blob/master/docs/keyspaces.md).
+Use the `generateToken` function to create a signed authentication token to use
+when authenticating with Reflect.
 
 #### Parameters
 
-* **slug** - The slug for a Keyspace.
+* **secretKey** - The secret key for the project you want to embed.
+* **params** - An array of parameter objects.
 
 #### Example
 
 ```python
 import reflect
 
-KEYSPACE_NAME = "My Keyspace"
-KEYSPACE_SLUG = "my-keyspace"
+REFLECT_PROJECT_SECRET_KEY = "abc123-my-secret-key-xyz987"
 
-client = reflect.Client.new("<API Token>")
-keyspace = client.keyspace(KEYSPACE_SLUG)
-```
+params = [
+  {
+    "field": "My Field",
+    "op": "=",
+    "value": "abc123"
+  }
+]
 
-### `destroy_keyspace(slug)`
-
-Delete an entire keyspace. If any keyspace operations are pending, the keyspace
-may be re-created by Reflect.
-
-#### Parameters
-
-* **slug** - The slug for a Keyspace.
-
-#### Example
-
-```python
-import reflect
-
-KEYSPACE_SLUG = "my-keyspace"
-
-client = reflect.Client.new("<API Token>")
-client.destroy_keyspace(KEYSPACE_SLUG)
+signedToken = reflect.generateToken(REFLECT_PROJECT_SECRET_KEY, params)
 ```
