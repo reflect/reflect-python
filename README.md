@@ -13,31 +13,6 @@ The Reflect python library is available via PyPI.
 $ pip install reflect
 ```
 
-## Example
-
-```python
-import reflect
-
-data = [
-  {
-    "customer_id": "customer1",
-    "widget_id": "widget1",
-    "manufactured": "Ohio",
-    "temperature": 150
-  },
-  {
-    "customer_id": "customer1",
-    "widget_id": "widget2",
-    "manufactured": "Ohio",
-    "temperature": 50
-  }
-]
-
-client = reflect.Client("<Your API Token>")
-keyspace = client.keyspace("demo-keyspace")
-keyspace.replace("my-tablet", data)
-```
-
 ## Support
 
 Reach out to [ReflectHQ on Twitter](https://twitter.com/reflecthq) or file an
