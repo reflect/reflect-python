@@ -3,95 +3,6 @@ import urllib2
 import version
 import json
 
-def _to_object(obj, client, klass):
-	return klass(client, obj)
-
-def _array_to_objects(objs, client, klass):
-	return [_to_object(obj, client, klass) for obj in objs]
-
-class ReflectObject(object):
-	def __init__(self, client, attrs):
-		self._client = client
-
-		if attrs:
-			for k, v in attrs.iteritems():
-				setattr(self, k, v)
-
-class Keyspace(ReflectObject):
-	"""A keyspace within a given Reflect account."""
-
-	def append(self, key, data):
-		"""Appends records to a tablet. If the tablet doesn't exist it will be
-		created. records can be either a single object or an array of objects. A
-		single object represents a single row."""
-		data = self._client.put(self._get_key_path(key), self._dump(data))
-
-		if data is None:
-			return None
-
-		# This is probably an error.
-		raise RuntimeError("An error occured during the request: %s" % (data['error']))
-
-	def replace(self, key, data):
-		"""Replaces the existing records in a tablet with a net set of records.
-		records can be either a single object or an array of objects. A single
-		object represents a single row."""
-		data = self._client.post(self._get_key_path(key), self._dump(data))
-
-		if data is None:
-			return None
-
-		# This is probably an error.
-		raise RuntimeError("An error occured during the request: %s" % (data['error']))
-
-	def patch(self, key, data, criteria):
-		"""Patches the existing records in a tablet with a net set of records. The
-		criteria parameter indicates which records to match existing records on.
-		In the Reflect API, if no existing records match the supplied records then
-		those records are dropped."""
-		headers = {"X-Criteria": ", ".join(criteria)}
-		data = self._client.patch(self._get_key_path(key), self._dump(data), headers)
-
-		if data is None:
-			return None
-
-		# This is probably an error.
-		raise RuntimeError("An error occured during the request: %s" % (data['error']))
-
-	def upsert(self, key, data, criteria):
-		"""Patch the existing records in a tablet with a new set of records and
-		insert any that aren't matched. The criteria parameter indicates which
-		records to match existing records on."""
-		headers = {
-			"X-Criteria": ", ".join(criteria),
-			"X-Insert-Missing": "true"
-		}
-
-		data = self._client.patch(self._get_key_path(key), self._dump(data), headers)
-
-		if data is None:
-			return None
-
-		# This is probably an error.
-		raise RuntimeError("An error occured during the request: %s" % (data['error']))
-
-	def delete(self, key):
-		"""Delete an entire tablet within a keyspace. If no tablet exists with the
-		supplied key then this is a no-op."""
-		data = self._client.delete(self._get_key_path(key))
-
-		if data is None:
-			return None
-
-		# This is probably an error.
-		raise RuntimeError("An error occured during the request: %s" % (data['error']))
-
-	def _get_key_path(self, key):
-		return "v1/keyspaces/%s/tablets/%s" % (self.slug, key)
-
-	def _dump(self, data):
-		return json.dumps(data)
-
 class Client(object):
 	"""Wraps up all the HTTP communication back to the Reflect service behind an
 	easy-to-user interface. Typically, users won't use this object directly. It's
@@ -168,3 +79,28 @@ class Client(object):
 			return json.loads(data)
 		else:
 			return None
+
+def generateToken(secretKey, params):
+    import hmac, hashlib
+    from base64 import b64encode
+
+    strs = []
+
+    for param in params:
+        val = ''
+        vals = []
+
+        if 'any' in param:
+            vals = param['any'].sort()
+        else:
+            val = param['value']
+
+        new_str = json.dumps([param['field'], param['op'], val, vals], indent=None, separators=(',', ':'))
+        strs.append(new_str)
+
+    strs.sort()
+    strs = "\n".join(strs)
+    msg = hmac.new(secretKey, digestmod=hashlib.sha256)
+    msg.update("V2\n")
+    msg.update(strs)
+    return "=2=" + b64encode(msg.digest())
