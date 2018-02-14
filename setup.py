@@ -1,6 +1,7 @@
 import os
 import sys
-import warnings
+
+from reflect.version import VERSION
 
 try:
     from setuptools import setup
@@ -15,23 +16,17 @@ except ImportError:
 path, script = os.path.split(sys.argv[0])
 os.chdir(os.path.abspath(path))
 
-install_requires = []
+install_requires = [
+    'jwcrypto>=0.4.2,<0.5'
+]
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'reflect'))
-from reflect.version import Version
-
-# Get simplejson if we don't already have json
-if sys.version_info < (3, 0):
-    try:
-        from util import json
-    except ImportError:
-        install_requires.append('simplejson')
 
 setup(
     name='reflect',
     cmdclass={'build_py': build_py},
-    version=Version,
-    description='Reflect python bindings',
+    version=VERSION,
+    description='Reflect Python bindings',
     long_description="A Python wrapper for the Reflect API.",
     author='Reflect',
     author_email='support@reflect.io',
