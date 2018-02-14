@@ -5,6 +5,7 @@
 *.pyc
 
 # Ignore build artifacts.
+/docs/build
 /dist
 /reflect.egg-info
 /build
