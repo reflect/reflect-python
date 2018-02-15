@@ -18,7 +18,7 @@ class ProjectKey(object):
         self.secret_key = str(uuid.uuid4())
         self.secret_key_jwk = jwk.JWK(
             kty='oct',
-            k=base64url_encode(uuid.UUID(self.secret_key).get_bytes()),
+            k=base64url_encode(uuid.UUID(self.secret_key).bytes),
         )
 
 

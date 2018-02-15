@@ -77,7 +77,7 @@ class ProjectTokenBuilder(object):
         """
         key = jwk.JWK(
             kty='oct',
-            k=base64url_encode(uuid.UUID(secret_key).get_bytes()),
+            k=base64url_encode(uuid.UUID(secret_key).bytes),
         )
 
         header = {
